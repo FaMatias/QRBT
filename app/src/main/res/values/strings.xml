@@ -1,0 +1,35 @@
+<resources>
+    <string name="QRGeneradorBT">QRGeneradorBT</string>
+    <string name="txt_saludo">Bienvenido!!</string>
+    <string name="edt_username">User</string>
+    <string name="edt_password">Password</string>
+    <string name="btn_Login">Login</string>
+    <string name="txt_regis">Registrar</string>
+    <string name="txt_registro">No te has registrado? Regístrate ahora</string>
+    <string name="txt_Bienvenida">Bienvenido!!!</string>
+
+    /*General */
+    <string name="txt_result">Resultado</string>
+
+    /*activiti long */
+    <string name="edt_txt_PrimerValor">Valor</string>
+    <string name="btn_Convertir">Convertir</string>
+    <string name="edt_valor">Ingresa un valor</string>
+
+    /*Registro */
+    <string name="txt_name">name</string>
+    <string name="txt_email">email</string>
+    <string name="txt_password">password</string>
+    <string name="btn_registro">Registrar</string>
+
+    /*Codigo QR */
+    <string name="qr_description">Descripción del código QR</string>
+
+    /*Banner Publicidad */
+    <string name="banner_ad_unit_id">ca-app-pub-2123913402412969/9940766675</string>
+    <string name="banner_ad_unit_id1">ca-app-pub-2123913402412969/5295778807</string>
+    <string name="banner_ad_unit_id2">ca-app-pub-2123913402412969/8665792573</string>
+
+    <string name="default_web_client_id">qrbt-356d2</string>
+
+</resources>
