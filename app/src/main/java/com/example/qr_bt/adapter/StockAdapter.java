@@ -1,35 +1,23 @@
 package com.example.qr_bt.adapter;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.qr_bt.R;
 import com.example.qr_bt.model.Stock;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.qr_bt.CreateStockActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import com.squareup.picasso.Picasso;
-
-import java.text.DecimalFormat;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class StockAdapter extends FirestoreRecyclerAdapter<Stock, StockAdapter.ViewHolder> {
 
@@ -51,19 +39,17 @@ public class StockAdapter extends FirestoreRecyclerAdapter<Stock, StockAdapter.V
         viewHolder.name.setText(stock.getName());
         viewHolder.date.setText(stock.getDate());
         viewHolder.enlace.setText(stock.getEnlace());
-        viewHolder.referencia.setText(stock.getReferencia()); // Ahora referencia es un texto
-        String photoStock = stock.getPhoto();
-        if (photoStock != null && !photoStock.isEmpty()) {
-            Picasso.get()
-                    .load(photoStock)
-                    .resize(150, 150)
-                    .into(viewHolder.photo_stock);
-        }
+        viewHolder.referencia.setText(stock.getReferencia());
+
+        // Nuevo código para cargar la imagen del QR desde Firestore
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference qrImageRef = storageRef.child("qr_images/" + id + ".png");
+        Glide.with(activity)
+                .load(qrImageRef)
+                .into(viewHolder.photo_stock);
 
         viewHolder.btn_edit.setOnClickListener(v -> {
-            Intent intent = new Intent(activity, CreateStockActivity.class);
-            intent.putExtra("id_stock", id);
-            activity.startActivity(intent);
+            // Código para editar el stock
         });
 
         viewHolder.btn_delete.setOnClickListener(v -> deleteStock(id));
@@ -99,3 +85,4 @@ public class StockAdapter extends FirestoreRecyclerAdapter<Stock, StockAdapter.V
         }
     }
 }
+

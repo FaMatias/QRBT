@@ -46,7 +46,6 @@ public class CreateQRActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_qr);
-
         linkEditText = findViewById(R.id.linkEditText);
         qrImageView = findViewById(R.id.qrImageView);
         generarQRButton = findViewById(R.id.generarQRButton);
@@ -67,8 +66,10 @@ public class CreateQRActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Bitmap qrBitmap = ((BitmapDrawable) qrImageView.getDrawable()).getBitmap();
-                guardarQR(qrBitmap, "nombre_del_archivo_qr");
-                Toast.makeText(CreateQRActivity.this, "QR guardado con éxito", Toast.LENGTH_LONG).show();
+                String nombreArchivoQR = obtenerNombreArchivoUnico();
+                guardarQR(qrBitmap, nombreArchivoQR);
+                subirImagenAFirebase(qrBitmap, nombreArchivoQR);
+                Toast.makeText(CreateQRActivity.this, "QR guardado y subido con éxito", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -98,7 +99,7 @@ public class CreateQRActivity extends AppCompatActivity {
     }
 
     private void guardarQR(Bitmap bitmap, String nombreArchivo) {
-        File ruta = getExternalFilesDir(null); // Uso de getExternalFilesDir()
+        File ruta = getExternalFilesDir(null);
         OutputStream fOut;
         File file = new File(ruta, nombreArchivo + ".png");
         try {
@@ -112,17 +113,12 @@ public class CreateQRActivity extends AppCompatActivity {
         }
     }
 
-    private void subirImagenAFirebase(Bitmap bitmap) {
-        // Convertir el bitmap a un array de bytes
+    private void subirImagenAFirebase(Bitmap bitmap, String nombreArchivo) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
         byte[] data = baos.toByteArray();
-
-        // Crear una referencia a Firebase Storage
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-        StorageReference qrImagesRef = storageRef.child("qr_images/nombre_del_archivo_qr.png");
-
-        // Subir la imagen
+        StorageReference qrImagesRef = storageRef.child("qr_images/" + nombreArchivo + ".png");
         UploadTask uploadTask = qrImagesRef.putBytes(data);
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
@@ -137,11 +133,14 @@ public class CreateQRActivity extends AppCompatActivity {
         });
     }
 
+    private String obtenerNombreArchivoUnico() {
+        // Genera un nombre de archivo único para el QR
+        return "qr_" + System.currentTimeMillis();
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // ... código para manejar los permisos ...
     }
-
 }

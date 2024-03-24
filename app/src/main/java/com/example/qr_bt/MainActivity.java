@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         btn_add_fragment = findViewById(R.id.btn_add_fragment);
         btn_exit = findViewById(R.id.btn_close);
 
-        btn_add.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, CreateStockActivity.class)));
+        btn_add.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, CreateImageWithTextActivity.class)));
 
         btn_add_fragment.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, CreateQRActivity.class)));
 
