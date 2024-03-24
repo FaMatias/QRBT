@@ -64,7 +64,7 @@ public class RegisterActivity extends AppCompatActivity {
                 } else if (!isEmailValid(emailUser)) {
                     Toast.makeText(RegisterActivity.this, "Ingrese un correo electrónico válido", Toast.LENGTH_SHORT).show();
                 } else if (!isPasswordValid(passUser)) {
-                    Toast.makeText(RegisterActivity.this, "La contraseña no cumple con los criterios de seguridad", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Las contraseñas deben ser numéricas de 6 a 10 dígitos", Toast.LENGTH_SHORT).show();
                 } else {
                     progressDialog.show();
                     registerUser(nameUser, emailUser, passUser);
@@ -86,7 +86,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private boolean isPasswordValid(String password) {
         Pattern passwordPattern = Pattern.compile(
-                "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$"
+                "^[0-9]{6,10}$"
         );
         return passwordPattern.matcher(password).matches();
     }

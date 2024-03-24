@@ -15,6 +15,14 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs {
+            release {
+                storeFile file("/FirmaAndroid.jks")
+                storePassword "ORO90supreme."
+                keyAlias "FabricioMatias"
+                keyPassword "ORO90supreme."
+            }
+        }
     }
 
     buildTypes {

@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -30,7 +31,7 @@
             android:name=".RegisterActivity"
             android:exported="true" />
         <activity
-            android:name=".CreateStockActivity"
+            android:name=".CreateImageWithTextActivity"
             android:exported="true" />
         <activity
             android:name=".LoginActivity"

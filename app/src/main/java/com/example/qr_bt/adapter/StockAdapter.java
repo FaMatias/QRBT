@@ -34,8 +34,8 @@ import java.text.DecimalFormat;
 public class StockAdapter extends FirestoreRecyclerAdapter<Stock, StockAdapter.ViewHolder> {
 
     private FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
-    Activity activity;
-    FragmentManager fm;
+    private Activity activity;
+    private FragmentManager fm;
 
     public StockAdapter(@NonNull FirestoreRecyclerOptions<Stock> options, Activity activity, FragmentManager fm) {
         super(options);
@@ -44,80 +44,51 @@ public class StockAdapter extends FirestoreRecyclerAdapter<Stock, StockAdapter.V
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull ViewHolder viewHolder, int i, @NonNull Stock Stock) {
-        DecimalFormat format = new DecimalFormat("0.00");
-//      format.setMaximumFractionDigits(2);
+    protected void onBindViewHolder(@NonNull ViewHolder viewHolder, int i, @NonNull Stock stock) {
         DocumentSnapshot documentSnapshot = getSnapshots().getSnapshot(viewHolder.getAdapterPosition());
         final String id = documentSnapshot.getId();
 
-        viewHolder.name.setText(Stock.getName());
-        viewHolder.date.setText(Stock.getDate());
-        viewHolder.enlace.setText(Stock.getEnlace());
-        viewHolder.referencia.setText( format.format(Stock.getReferencia()));
-        String photoStock = Stock.getPhoto();
-        try {
-            if (!photoStock.equals(""))
-                Picasso.get()
-                        .load(photoStock)
-                        .resize(150, 150)
-                        .into(viewHolder.photo_stock);
-        } catch (Exception e) {
-            Log.d("Exception", "e: "+e);
+        viewHolder.name.setText(stock.getName());
+        viewHolder.date.setText(stock.getDate());
+        viewHolder.enlace.setText(stock.getEnlace());
+        viewHolder.referencia.setText(stock.getReferencia()); // Ahora referencia es un texto
+        String photoStock = stock.getPhoto();
+        if (photoStock != null && !photoStock.isEmpty()) {
+            Picasso.get()
+                    .load(photoStock)
+                    .resize(150, 150)
+                    .into(viewHolder.photo_stock);
         }
 
-        viewHolder.btn_edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//          SEND DATA ACTIVITY
-                Intent i = new Intent(activity, CreateStockActivity.class);
-                i.putExtra("id_stock", id);
-                activity.startActivity(i);
-
-//          SEND DATA FRAGMENT
-//            CreateStockFragment createStockFragment = new CreateStockFragment();
-//            Bundle bundle = new Bundle();
-//            bundle.putString("id_Stock", id);
-//            createStockFragment.setArguments(bundle);
-//            createStockFragment.show(fm, "open fragment");
-            }
+        viewHolder.btn_edit.setOnClickListener(v -> {
+            Intent intent = new Intent(activity, CreateStockActivity.class);
+            intent.putExtra("id_stock", id);
+            activity.startActivity(intent);
         });
 
-        viewHolder.btn_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteStock(id);
-            }
-        });
+        viewHolder.btn_delete.setOnClickListener(v -> deleteStock(id));
     }
 
     private void deleteStock(String id) {
-        mFirestore.collection("stock").document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Toast.makeText(activity, "Eliminado correctamente", Toast.LENGTH_SHORT).show();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(activity, "Error al eliminar", Toast.LENGTH_SHORT).show();
-            }
-        });
+        mFirestore.collection("stock").document(id)
+                .delete()
+                .addOnSuccessListener(aVoid -> Toast.makeText(activity, "Eliminado correctamente", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(activity, "Error al eliminar: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_stock_single, parent, false);
-        return new ViewHolder(v);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_stock_single, parent, false);
+        return new ViewHolder(view);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView name, date, enlace, referencia;
         ImageView btn_delete, btn_edit, photo_stock;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
             name = itemView.findViewById(R.id.nombre);
             date = itemView.findViewById(R.id.fecha);
             enlace = itemView.findViewById(R.id.enlace);

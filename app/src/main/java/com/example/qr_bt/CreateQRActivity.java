@@ -18,14 +18,22 @@ import android.graphics.drawable.BitmapDrawable;
 
 import android.widget.Toast;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.UploadTask;
+import androidx.annotation.NonNull;
 
 public class CreateQRActivity extends AppCompatActivity {
     private EditText linkEditText;
@@ -103,6 +111,32 @@ public class CreateQRActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    private void subirImagenAFirebase(Bitmap bitmap) {
+        // Convertir el bitmap a un array de bytes
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        // Crear una referencia a Firebase Storage
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference qrImagesRef = storageRef.child("qr_images/nombre_del_archivo_qr.png");
+
+        // Subir la imagen
+        UploadTask uploadTask = qrImagesRef.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Manejar errores
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // Imagen subida con éxito
+            }
+        });
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
